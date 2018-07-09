@@ -1,11 +1,26 @@
 import numpy as np
-from . import Model
+from copy import deepcopy
+from .model import Model
 
 
 class Logistic(Model):
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, train_data: list, signs: list, theta: float=10e-6):
+        super(Logistic, self).__init__(train_data, signs, theta)
+
+    def predict(self, text: str):
+        """
+        @param text <str> : 文章
+        @return <int> : どちらのクラスに属するかを2値で返す(+1 or -1)
+        @return <float> : +1クラスに属する確率
+                          (0.5以上ならば1つ目の返り値は+1になる)
+        どちらのクラスに属するかと+1クラスに属する確率を返す
+        """
+
+        vec = self.getvec(text)
+        prob = self.sigmoid(np.dot(vec, self.w))
+        class_ = 1 if prob >= 0.5 else -1
+        return class_, prob
 
     def train_one_step(self, i: int):
         """
@@ -15,25 +30,25 @@ class Logistic(Model):
         """
 
         # 学習データをコピー
-        w_old = deepcopy(self.__w)
-        eta = 1.0 / np.sqrt(10 + self.__t)
+        w_old = deepcopy(self.w)
+        eta = 1.0 / np.sqrt(self.t + 10)
         # 学習する値を取得
-        y = sign[i]
+        y = self.signs[i]
         f = self.train_data[i]
         s = y * (1 - self.prob_val(y, f)) * f
-        self.__w += eta * s
-        self.__t += 1
-        self.end = True if np.norm(self.__w, w_old) < self.__theta else False
+        self.w += eta * s
+        self.t += 1
+        self.end = True if np.linalg.norm(self.w - w_old) < self.theta else False
 
-    def prob_val(self, y: int=1, feature: np.array) -> float:
+    def prob_val(self, y: int, feature: np.array) -> float:
         """
         @param y <int> : クラス(-1 or 1)
         @param feature <list> : 素性
         @return <float> : ロジスティック回帰モデルにおける確率値(P(y|d))
-        指定したクラスへの属する確率を返す(0 ~ 1 の間)
+        指定したクラスへ属する確率を返す(0 ~ 1 の間)
         """
 
-        val = -1 * y * np.dot(self.__w, feature)
+        val = y * np.dot(self.w, feature)
         return self.sigmoid(val)
 
     def sigmoid(self, t: float) -> float:
@@ -43,4 +58,4 @@ class Logistic(Model):
         sigmoid 関数の値を返す
         """
 
-        return 1 / (1 + np.exp(-1 * t))
+        return 1 / (1 + np.exp(-t))
