@@ -5,10 +5,14 @@ name = "pypi"
 
 [packages]
 numpy = "*"
+scipy = "*"
 flask = "*"
 "mecab-python3" = "*"
+scikit-learn = "*"
+gensim = "*"
 
 [dev-packages]
+matplotlib = "*"
 
 [requires]
 python_version = "3.6"
