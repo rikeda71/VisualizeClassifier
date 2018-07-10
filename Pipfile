@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 numpy = "*"
+flask = "*"
 "mecab-python3" = "*"
 
 [dev-packages]
