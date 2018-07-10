@@ -6,7 +6,7 @@ from copy import deepcopy
 
 class Model(object):
 
-    def __init__(self, train_data: list, signs: list, theta: float=10e-3):
+    def __init__(self, train_data: list, signs: list, theta: float=10e-6):
         """
         @param train_data <list> : 学習データのベクトル群
         @param signs <list> : 学習データのクラス（+1, -1）
@@ -25,16 +25,16 @@ class Model(object):
         self.t = 0
         self.end = False
 
-    def train(self, min_iter: int=100, max_iter: int=10000):
+    def train(self, min_iter: int=100, max_iter: int=1000):
         """
         @param max_iteration <int> : 最大学習回数
         学習機の学習を行う
         """
 
-        while (not self.end or self.t < min_iter) and self.t < max_iter:
-            i = np.random.randint(0, self.n)
-            self.train_one_step(i)
-        print(self.t)
+        while self.t < max_iter and not self.end:
+            N = np.random.randint(0, self.n, self.n)
+            for i in N:
+                self.train_one_step(i)
         self.save_model()
 
     def predict(self, text: str):

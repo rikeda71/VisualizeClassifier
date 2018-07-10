@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.decomposition import PCA
 from copy import deepcopy
 from .model import Model
 
@@ -20,7 +21,7 @@ class Logistic(Model):
         vec = self.getvec(text)
         prob = self.sigmoid(np.dot(vec, self.w))
         class_ = 1 if prob >= 0.5 else -1
-        return class_, prob
+        return class_, prob, vec * self.w
 
     def train_one_step(self, i: int):
         """
@@ -38,7 +39,9 @@ class Logistic(Model):
         s = y * (1 - self.prob_val(y, f)) * f
         self.w += eta * s
         self.t += 1
-        self.end = True if np.linalg.norm(self.w - w_old) < self.theta else False
+        norm = np.linalg.norm(self.w - w_old)
+        if norm > 0.0 and norm < self.theta:
+            self.end = True
 
     def prob_val(self, y: int, feature: np.array) -> float:
         """
