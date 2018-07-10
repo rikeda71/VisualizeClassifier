@@ -17,14 +17,16 @@ def tokenize(text: str) -> list:
     tokens = []
     node = m.parseToNode(text)
     while node:
-        if node.feature.split(",")[0] in ["名詞", "動詞", "形容詞"]:
-            tokens.append(node.surface)
+        f = node.feature.split(",")
+        if f[0] in ["名詞", "動詞", "形容詞"]:
+            tokens.append(f[-3])
         node = node.next
     return tokens
 
 
 if __name__ == "__main__":
-    with open("models/dataset/concat.csv", "r") as f:
+    # with open("models/dataset/sentiment.txt", "r") as f:
+    with open("models/dataset/concat.csv", "r", encoding="utf-8") as f:
         words = [tokenize(line[2:]) for line in f.readlines()]
     dic = corpora.Dictionary(words)
     dic.filter_extremes()
