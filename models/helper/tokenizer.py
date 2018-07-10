@@ -24,8 +24,8 @@ def tokenize(text: str) -> list:
 
 
 if __name__ == "__main__":
-    with open("../dataset/concat.csv", "r") as f:
+    with open("models/dataset/concat.csv", "r") as f:
         words = [tokenize(line[2:]) for line in f.readlines()]
     dic = corpora.Dictionary(words)
     dic.filter_extremes()
-    dic.save_as_text("../dataset/dic.txt")
+    dic.save_as_text("models/dataset/dic.txt")

@@ -1,8 +1,7 @@
 from .model.logistic import Logistic
-from .helper.getvec import getvec
 
 
-with open("dataset/concat.csv") as f:
+with open("models/dataset/concat.csv") as f:
     lines = [line.replace("\n", "") for line in f.readlines()]
 
 index = int(len(lines) * 0.9)

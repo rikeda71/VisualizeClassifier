@@ -16,7 +16,7 @@ class Model(object):
         neologd_path = "/usr/lib/mecab/dic/mecab-ipadic-neologd"
         self.m = MeCab.Tagger("-d" + neologd_path)
         self.m.parse("")
-        self.dic = corpora.Dictionary.load_from_text("dataset/dic.txt")
+        self.dic = corpora.Dictionary.load_from_text("models/dataset/dic.txt")
         self.train_data = [self.getvec(t) for t in train_data]
         self.signs = signs
         self.theta = theta
@@ -68,7 +68,7 @@ class Model(object):
         学習したベクトルを保存
         """
 
-        np.save("result/" + fname, self.w)
+        np.save("models/result/" + fname, self.w)
 
     def load_model(self, fname: str="model.npy"):
         """
@@ -76,4 +76,4 @@ class Model(object):
         学習したモデルを読み込む
         """
 
-        self.w = np.load("result/" + fname)
+        self.w = np.load("models/result/" + fname)
