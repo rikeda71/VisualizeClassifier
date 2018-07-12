@@ -6,7 +6,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-# with open("models/dataset/sentiment.txt") as f:
 with open("models/dataset/concat.csv") as f:
     lines = [line.replace("\n", "") for line in f.readlines()]
 
@@ -63,12 +62,3 @@ px = np.linspace(np.min(x_reduced[:, 0]), np.max(x_reduced[:, 0]), 100)
 py = -(model.w[0] * px) / model.w[1]
 plt.plot(px, py)
 plt.savefig("a.png")
-
-"""
-# sklearn 実装
-train_sents = [model.getvec(t) for t in train_sents]
-test_sents = [model.getvec(t) for t in test_sents]
-lr = LogisticRegression()
-lr.fit(train_sents, train_signs)
-print(lr.score(test_sents, test_signs))
-"""
