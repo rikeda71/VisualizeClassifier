@@ -1,6 +1,5 @@
 import numpy as np
 import MeCab
-from gensim import corpora, matutils
 from copy import deepcopy
 
 
@@ -16,7 +15,12 @@ class Model(object):
         neologd_path = "/usr/lib/mecab/dic/mecab-ipadic-neologd"
         self.m = MeCab.Tagger("-d" + neologd_path)
         self.m.parse("")
-        self.dic = corpora.Dictionary.load_from_text("models/dataset/dic.txt")
+        self.dic = {}
+        with open("models/dataset/pn_ja.dic", "r") as f:
+            for line in f.readlines():
+                line = line.replace("\n", "")
+                s = line.split(":")
+                self.dic[s[0]] = float(s[-1])
         self.train_data = [self.getvec(t) for t in train_data]
         self.signs = signs
         self.theta = theta
@@ -55,8 +59,13 @@ class Model(object):
             tokens.append(node.surface)
             node = node.next
         # ベクトルに変換
-        tmp = self.dic.doc2bow(tokens)
-        vec = list(matutils.corpus2dense([tmp], num_terms=len(self.dic)).T[0])
+        vec = [0, 0]
+        for t in tokens:
+            if t in self.dic:
+                if self.dic[t] >= 0:
+                    vec[0] += self.dic[t]
+                else:
+                    vec[1] -= self.dic[t]
         return np.array(vec)
 
     def train_one_step(self, i: int):

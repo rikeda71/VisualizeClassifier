@@ -21,7 +21,13 @@ class Logistic(Model):
         vec = self.getvec(text)
         prob = self.sigmoid(np.dot(vec, self.w))
         class_ = 1 if prob >= 0.5 else -1
-        return class_, prob, vec * self.w
+        return class_, prob, vec
+
+    def predict_using_vec(self, vec):
+
+        prob = self.sigmoid(np.dot(vec, self.w))
+        class_ = 1 if prob >= 0.5 else -1
+        return class_, prob, vec
 
     def train_one_step(self, i: int):
         """
