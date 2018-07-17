@@ -40,7 +40,7 @@ for t, sign in zip(test_sents, test_signs):
         llr_false.append(p[2])
     elif sign == -1 and p[0] == -1:
         llb_true.append(p[2])
-    else:
+    elif sign == -1 and p[0] == 1:
         llb_false.append(p[2])
 print(count, len(test_signs))
 print(count / len(test_signs))
@@ -50,15 +50,18 @@ print(len(llr_false))
 print(len(llb_true))
 print(len(llb_false))
 
-tsne = TSNE(n_components=2, perplexity=20)
+# tsne = TSNE(n_components=2, perplexity=20)
 
-array = np.array(llr_true + llb_false + llb_true + llr_false)
-colors = ["orange"] * (len(llr_true) + len(llr_false)) + ["blue"] * (len(llb_true) + len(llb_false))
+array = np.array(llr_true + llr_false + llb_true + llb_false)
+# colors = ["orange"] * (len(llr_true) + len(llr_false)) + ["blue"] * (len(llb_true) + len(llb_false))
+colors = ["orange"] * len(llr_true) + ["blue"] * len(llr_false) + ["blue"] * len(llb_true) + ["orange"] * len(llb_false)
 markers = ["o"] * len(llr_true) + ["*"] * len(llr_false) + ["o"] * len(llb_true) + ["*"] * len(llb_false)
-x_reduced = tsne.fit_transform(array.data)
+# x_reduced = tsne.fit_transform(array.data)
+x_reduced = array
 for i in range(len(x_reduced)):
-    plt.scatter(x_reduced[i, 0], x_reduced[i, 1], c=colors[i], marker=markers[i])
+    plt.scatter(array[i, 0], array[i, 1], c=colors[i], marker=markers[i])
 px = np.linspace(np.min(x_reduced[:, 0]), np.max(x_reduced[:, 0]), 100)
 py = -(model.w[0] * px) / model.w[1]
+
 plt.plot(px, py)
 plt.savefig("a.png")
