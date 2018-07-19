@@ -6,7 +6,7 @@ from .model import Model
 
 class Logistic(Model):
 
-    def __init__(self, train_data: list, signs: list, theta: float=10e-6):
+    def __init__(self, train_data: list=[], signs: list=[], theta: float=10e-6):
         super(Logistic, self).__init__(train_data, signs, theta)
 
     def predict(self, text: str):

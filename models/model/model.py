@@ -5,7 +5,7 @@ from copy import deepcopy
 
 class Model(object):
 
-    def __init__(self, train_data: list, signs: list, theta: float=10e-6):
+    def __init__(self, train_data: list=[], signs: list=[], theta: float=10e-6):
         """
         @param train_data <list> : 学習データのベクトル群
         @param signs <list> : 学習データのクラス（+1, -1）
@@ -21,13 +21,14 @@ class Model(object):
                 line = line.replace("\n", "")
                 s = line.split(":")
                 self.dic[s[0]] = float(s[-1])
-        self.train_data = [self.getvec(t) for t in train_data]
-        self.signs = signs
-        self.theta = theta
-        self.n = len(self.train_data)
-        self.w = np.random.random(len(self.train_data[0]))
-        self.t = 0
-        self.end = False
+        if len(train_data) > 0 and len(signs) > 0:
+            self.train_data = [self.getvec(t) for t in train_data]
+            self.signs = signs
+            self.theta = theta
+            self.n = len(self.train_data)
+            self.w = np.random.random(len(self.train_data[0]))
+            self.t = 0
+            self.end = False
 
     def train(self, min_iter: int=100, max_iter: int=1000):
         """
