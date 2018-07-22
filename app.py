@@ -26,10 +26,17 @@ def sentplot():
     sign, per, vec = result
     vec = list(vec)
     w = list(m.w)
+    dic = {"x": float(vec[0]),
+           "y": float(vec[1]),
+           "text": sentence}
+    dict_to_json(dic)
     make_sample_vecs_to_json()
     return render_template("sentplot.html",
-                           w=w, sign=sign, per=per, vec=vec, dic="dic")
+                           w=w, sign=sign, per=per)
 
+def dict_to_json(dic: dict):
+    with open("static/sentvec.json", "w") as f:
+        json.dump(dic, f)
 
 def make_sample_vecs_to_json():
     with open("models/dataset/concat.csv") as f:
