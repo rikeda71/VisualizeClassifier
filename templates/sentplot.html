@@ -11,14 +11,8 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     </head>
     <body>
-        <div class="header">
-            <h3 class="text-muted">Sample Page</h3>
-            {% if message %}
-                <p>{{message}}</p>
-            {% endif %}
-        </div>
         <div id="container">
-            <script type="text/javascript" src="static/test.js"></script>
+            <script type="text/javascript" src="static/sentvecplot.js"></script>
             <script>
                 $(function(){
                     plotclassifier({{w}});
