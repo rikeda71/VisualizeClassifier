@@ -1,5 +1,6 @@
 import numpy as np
 import MeCab
+import subprocess
 from copy import deepcopy
 
 
@@ -12,8 +13,13 @@ class Model(object):
         @param theta <float> : 学習の閾値
         """
 
-        neologd_path = "/usr/lib/mecab/dic/mecab-ipadic-neologd"
-        self.m = MeCab.Tagger("-d" + neologd_path)
+        command = "echo `mecab-config --dicdir`\"/mecab-ipadic-neologd\""
+        try:
+            neologd_path = subprocess.check_output(command, shell=True)
+            self.m = MeCab.Tagger("-d" + str(neologd_path))
+            print(type(neologd_path))
+        except:
+            self.m = MeCab.Tagger()
         self.m.parse("")
         self.dic = {}
         with open("models/dataset/pn_ja.dic", "r") as f:
