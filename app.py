@@ -16,6 +16,7 @@ train_sents = [k for k in train_data.keys()]
 train_signs = [int(v) for v in train_data.values()]
 logistic = Logistic(train_sents, train_signs)
 
+
 @app.route("/")
 def hello_world():
     return "Hello World!"
@@ -24,8 +25,7 @@ def hello_world():
 @app.route("/train")
 def train():
     # logistic.reset_json()
-    # exec = concurrent.futures.ThreadPoolExecutor(max_workers=1)
-    # exec.submit(logistic.train())
+    logistic.train()
     return render_template("train.html")
 
 
