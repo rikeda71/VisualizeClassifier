@@ -2,6 +2,7 @@ import numpy as np
 import MeCab
 import subprocess
 from copy import deepcopy
+import json
 
 
 class Model(object):
@@ -28,6 +29,7 @@ class Model(object):
                 s = line.split(":")
                 self.dic[s[0]] = float(s[-1])
         if len(train_data) > 0 and len(signs) > 0:
+            self.sentences = [t for t in train_data]
             self.train_data = [self.getvec(t) for t in train_data]
             self.signs = signs
             self.theta = theta
@@ -35,6 +37,7 @@ class Model(object):
             self.w = np.random.random(len(self.train_data[0]))
             self.t = 0
             self.end = False
+        self.reset_json()
 
     def train(self, min_iter: int=100, max_iter: int=1000):
         """
@@ -93,3 +96,10 @@ class Model(object):
         """
 
         self.w = np.load("models/result/" + fname)
+    
+    def dict_to_json(self, dic: dict):
+        with open("static/json/" + str(self.t) + ".json", "w") as f:
+            json.dump(dic, f)
+
+    def reset_json(self):
+        subprocess.call("rm -f static/json/*", shell=True)
