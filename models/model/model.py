@@ -28,6 +28,9 @@ class Model(object):
                 line = line.replace("\n", "")
                 s = line.split(":")
                 self.dic[s[0]] = float(s[-1])
+                morph = self.m.parse(s[0])
+                morph_str = morph[:morph.find("\t")]
+                self.dic[morph_str] = float(s[-1])
         if len(train_data) > 0 and len(signs) > 0:
             self.sentences = [t for t in train_data]
             self.train_data = [self.getvec(t) for t in train_data]
@@ -37,7 +40,7 @@ class Model(object):
             self.w = np.random.random(len(self.train_data[0]))
             self.t = 0
             self.end = False
-        self.reset_json()
+            self.cnt = 0
 
     def train(self, min_iter: int=100, max_iter: int=1000):
         """
@@ -98,7 +101,7 @@ class Model(object):
         self.w = np.load("models/result/" + fname)
     
     def dict_to_json(self, dic: dict):
-        with open("static/json/" + str(self.t) + ".json", "w") as f:
+        with open("static/json/" + str(self.cnt) + ".json", "w") as f:
             json.dump(dic, f)
 
     def reset_json(self):

@@ -1,7 +1,7 @@
 import numpy as np
-from sklearn.decomposition import PCA
 from copy import deepcopy
 from .model import Model
+import json
 
 
 class Logistic(Model):
@@ -44,10 +44,30 @@ class Logistic(Model):
         f = self.train_data[i]
         s = y * (1 - self.prob_val(y, f)) * f
         self.w += eta * s
-        self.t += 1
         norm = np.linalg.norm(self.w - w_old)
+        if self.cnt < 100 and norm > 0.1:
+            if self.cnt > 0:
+                with open("static/json/" + str(self.cnt - 1) + ".json", "r") as f:
+                    before = json.load(f)
+                    bline = before["line"]
+                    bvec = before["vec"]
+            else:
+                bline = {"x": 0, "y": 0}
+                bvec = []
+            dic = {"line": {"x": float(self.w[0]), "y": float(self.w[1])},
+                   "bline": {"x": bline["x"], "y": bline["y"]},
+                    "vec": bvec +
+                    [{"sign": self.signs[i],
+                        "x": float(self.train_data[i][0]),
+                        "y": float(self.train_data[i][1]),
+                        "text": self.sentences[i]}
+                    ]
+                  }
+            self.dict_to_json(dic)
+            self.cnt += 1
         if norm > 0.0 and norm < self.theta:
             self.end = True
+        self.t += 1
 
     def prob_val(self, y: int, feature: np.array) -> float:
         """
