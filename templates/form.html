@@ -1,12 +1,17 @@
-<html>
-    <body>
-        <form action = "/sentplot" method = "POST">
-            <p>
-            分類したい文章を以下に入力してください
-            <br>
-            <input type = "text" name = "sentence" />
-            </p>
-            <p><input type = "submit" value = "submit" /></p>
-        </form>
-    </body>
+{% extends "layout.html" %}
+{% block content %}
+<div class="row" id="header">
+</div>
+<div class="input">
+    <form action = "/sentplot" method = "POST">
+        <p>
+        分類したい文章を以下に入力してください
+        <br>
+        <input type = "text" name = "sentence" />
+        </p>
+        <p><input type = "submit" value = "submit" /></p>
+    </form>
+</div>
+{% endblock %}
+</body>
 </html>
