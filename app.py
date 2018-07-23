@@ -1,16 +1,32 @@
 from flask import Flask, render_template, request
 from models.model.logistic import Logistic
 import json
+import concurrent.futures
 
 
 app = Flask(__name__)
 m = Logistic()
 m.load_model(fname="sentplot.npy")
 
+with open("models/dataset/concat.csv") as f:
+    lines = [line.replace("\n", "") for line in f.readlines()]
+
+train_data = {t[2:]: t[:2] for t in lines[:-100]}
+train_sents = [k for k in train_data.keys()]
+train_signs = [int(v) for v in train_data.values()]
+logistic = Logistic(train_sents, train_signs)
 
 @app.route("/")
 def hello_world():
     return "Hello World!"
+
+
+@app.route("/train")
+def train():
+    # logistic.reset_json()
+    # exec = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+    # exec.submit(logistic.train())
+    return render_template("train.html")
 
 
 @app.route("/form")
@@ -29,14 +45,16 @@ def sentplot():
     dic = {"x": float(vec[0]),
            "y": float(vec[1]),
            "text": sentence}
-    dict_to_json(dic)
+    dict_to_json(dic, "sentvec.json")
     make_sample_vecs_to_json()
     return render_template("sentplot.html",
-                           w=w, sign=sign, per=per)
+                           w=w, per=per)
 
-def dict_to_json(dic: dict):
-    with open("static/sentvec.json", "w") as f:
+
+def dict_to_json(dic: dict, name: str):
+    with open("static/" + name, "w") as f:
         json.dump(dic, f)
+
 
 def make_sample_vecs_to_json():
     with open("models/dataset/concat.csv") as f:
@@ -53,8 +71,7 @@ def make_sample_vecs_to_json():
             j["vecs"]["x"].append(float(vector[0]))
             j["vecs"]["y"].append(float(vector[1]))
             j["sign"].append(k)
-    with open("static/test.json", "w") as f:
-        json.dump(j, f)
+    dict_to_json(j, "test.json")
 
 
 if __name__ == "__main__":
