@@ -1,5 +1,5 @@
-function plotclassifier(sepline){
-  var [vecs, xmin, xmax, ymin, ymax] = arrange_vec(-sepline[0] / sepline[1]);
+function plotclassifier(sepline, text, textvec){
+  var [vecs, xmin, xmax, ymin, ymax] = arrange_vec(-sepline[0] / sepline[1], text, textvec);
   Highcharts.chart('container', {
     xAxis: {
       title: {
@@ -23,38 +23,48 @@ function plotclassifier(sepline){
     tooltip: {
       pointFormat: 'text: {point.text}<br>x: {point.x}<br>y: {point.y}',
     },
-    series: vecs
+    series: vecs,
+    credits:{
+      enabled: false
+    }
   });
 }
 
-function arrange_vec(slope){
+function arrange_vec(slope, text, textvec){
   $.ajaxSetup({ async: false });
   var vecs = [];
   var inputvec;
   var xmin, xmax, ymin, ymax;
-  
+
   // サンプル文のベクトルを抽出
-  $.getJSON("static/test.json", function(json){
+  $.getJSON("static/json/test.json", function(json){
     xmin = Math.min.apply(null, json.vecs.x);
     xmax = Math.max.apply(null, json.vecs.x);
-    ymin = xmin * slope;
-    ymax = xmax * slope;
-    /* 分離平面の設定 */
-    const sepline = {
-      type: 'line',
-      name: 'Separation line',
-      // ベクトルの最大値，最小値を活用
-      data: [[xmin, ymin],
-             [xmax, ymax]],
-      marker: {
-        enabled: false
-      },
-      states: {
-        hover: {
-          lineWidth: 0
-        }
-      },
-      enableMouseTracking: false
+    if (Number.isNaN(slope)) {
+      ymin = Math.min.apply(null, json.vecs.y);
+      ymax = Math.max.apply(null, json.vecs.y);
+    }
+    else {
+      ymin = xmin * slope;
+      ymax = xmax * slope;
+      /* 分離平面の設定 */
+      const sepline = {
+        type: 'line',
+        name: 'Separation line',
+        // ベクトルの最大値，最小値を活用
+        data: [[xmin, ymin],
+          [xmax, ymax]],
+        marker: {
+          enabled: false
+        },
+        states: {
+          hover: {
+            lineWidth: 0
+          }
+        },
+        enableMouseTracking: false
+      }
+      vecs.push(sepline);
     }
     /* 点ベクトルのフォーマット */
     var pos = {
@@ -91,27 +101,28 @@ function arrange_vec(slope){
         neg.data.push(obj);
       }
     }
-    // 入力テキストのベクトル
-    $.getJSON("static/sentvec.json", function(json){
-      inputvec = {
-        type: 'scatter',
-        name: 'input sentence vector',
-        data: [json],
-        color: 'rgba(80, 230, 80, 1)',
-        marker: {
-          symbol: 'circle',
-          radius:6,
-        },
-  
-      }
-    });
-
-    $.ajaxSetup({ async: true });
     // 可視化のパーツを1つずつ格納
-    vecs.push(sepline);
     vecs.push(pos);
     vecs.push(neg);
-    vecs.push(inputvec);
   });
+  if (text != "") {
+    // 入力テキストのベクトル
+    inputvec = {
+      type: 'scatter',
+      name: 'input sentence vector',
+      data: [{
+        x: textvec[0],
+        y: textvec[1],
+        text: text
+      }],
+      color: 'rgba(80, 230, 80, 1)',
+      marker: {
+        symbol: 'circle',
+        radius:6,
+      },
+    }
+    vecs.push(inputvec);
+  }
+  $.ajaxSetup({ async: true });
   return [vecs, xmin, xmax, ymin, ymax];
 }
