@@ -8,7 +8,6 @@ numpy = "*"
 scipy = "*"
 flask = "*"
 "mecab-python3" = "*"
-scikit-learn = "*"
 gensim = "*"
 
 [dev-packages]
