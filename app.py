@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 from models.model.logistic import Logistic
 import json
-import concurrent.futures
+import subprocess
 
 
 app = Flask(__name__)
@@ -19,40 +19,36 @@ logistic = Logistic(train_sents, train_signs)
 
 @app.route("/")
 def hello_world():
-    return "Hello World!"
+    return render_template("index.html")
 
 
 @app.route("/train")
 def train():
-    # logistic.reset_json()
     logistic.train()
     return render_template("train.html")
 
 
 @app.route("/form")
-def form():
+def form_before_POST():
+    make_sample_vecs_to_json()
     return render_template("form.html")
 
 
-@app.route("/sentplot", methods=["POST"])
-def sentplot():
+@app.route("/form", methods=["POST"])
+def form():
     if request.method == "POST":
         sentence = request.form["sentence"]
     result = m.predict(sentence)
     sign, per, vec = result
     vec = list(vec)
     w = list(m.w)
-    dic = {"x": float(vec[0]),
-           "y": float(vec[1]),
-           "text": sentence}
-    dict_to_json(dic, "sentvec.json")
     make_sample_vecs_to_json()
-    return render_template("sentplot.html",
-                           w=w, per=per)
+    return render_template("form.html", w=w, text=sentence,
+                           textvec=[float(vec[0]), float(vec[1])])
 
 
 def dict_to_json(dic: dict, name: str):
-    with open("static/" + name, "w") as f:
+    with open("static/json/" + name, "w") as f:
         json.dump(dic, f)
 
 
