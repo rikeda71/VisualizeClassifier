@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="page-header">
+    <h2>Menu</h2>
+</div>
+<div class="row marketing">
+    <div class="col-lg-6">
+        <h4>Train</h4>
+        <p>教師あり学習による文書分類の学習の様子を確認することができます．</p>
+        <a class="btn btn-default" href="/train" role="button">View details »</a>
+    </div>
+    <div class="col-lg-6">
+        <h4>Form</h4>
+        <p>学習したモデルを用いて，文書分類を行い，可視化により他の文のベクトルと比較を行うことができます．</p>
+        <a class="btn btn-default" href="/form" role="button">View details »</a>
+    </div>
+</div>
+{% endblock %}

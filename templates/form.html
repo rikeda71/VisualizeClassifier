@@ -1,17 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="row" id="header">
-</div>
 <div class="input">
-    <form action = "/sentplot" method = "POST">
-        <p>
-        分類したい文章を以下に入力してください
-        <br>
-        <input type = "text" name = "sentence" />
-        </p>
-        <p><input type = "submit" value = "submit" /></p>
+    <form action = "/form" method = "POST" autocomplete="off">
+        <h4>分類したい文章を以下に入力してください<h4>
+        <div class="form-group">
+            <input type="sentence" class="form-control" name="sentence">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
     </form>
 </div>
+<div id="container">
+    <script type="text/javascript" src="static/sentvecplot.js"></script>
+    <script>
+        var weight = [0, 0];
+        var sentence = ""
+        var vector = [0, 0];
+        {% if w %}
+            weight = {{ w }};
+        {% endif %}
+        {% if text %}
+            sentence = String(`{{ text }}`);
+        {% endif %}
+        {% if w %}
+            vector = {{ textvec }};
+        {% endif %}
+        $(function(){
+            plotclassifier(weight, sentence, vector);
+        });
+    </script>
+</div>
 {% endblock %}
-</body>
-</html>
