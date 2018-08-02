@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 numpy = "*"
-scipy = "*"
 flask = "*"
 "mecab-python3" = "*"
 gensim = "*"
